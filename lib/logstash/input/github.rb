@@ -37,8 +37,8 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
         begin
           event = LogStash::Event.new(JSON.parse(body))
         rescue JSON::ParserError => e
-          @logger.info("JSON parse failure. Falling back to plain-text", :error => e, :data => data)
-          yield LogStash::Event.new("message" => data)
+          @logger.info("JSON parse failure. Falling back to plain-text", :error => e, :data => body)
+          event = LogStash::Event.new("message" => body, "tags" => "_invalidjson")
         end
         event['headers'] = request.headers.to_hash
         if defined? @secrettoken and event['headers']['x-hub-signature']
