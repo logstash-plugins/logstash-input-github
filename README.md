@@ -3,6 +3,30 @@ logstash-github
 
 This plugin accepts github webhook connections and passes the data into the logstash pipeline.
 
+Usage
+=====
+
+Example config:
+
+    input {
+        stdin {}
+        tcp {
+            codec => github
+            port => 8080
+            data_timeout => 1
+        }
+    }
+
+    output {
+        stdout {
+            codec => rubydebug
+        }
+    }
+
+Example Test Case using Curl:
+
+    curl -H "Content-Type: application/json" -d '{"Something":"xyz","somethingelse":"xyz"}' http://localhost:8080/api/login
+
 
 Build
 =====
