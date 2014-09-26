@@ -10,10 +10,8 @@ Example config:
 
     input {
         stdin {}
-        tcp {
-            codec => github
+        github {
             port => 8080
-            data_timeout => 1
         }
     }
 
