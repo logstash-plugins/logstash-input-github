@@ -20,11 +20,11 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
   config :port, :validate => :number, :required => true
 
   # Your GitHub Secret Token for the webhook
-  config :secrettoken, :validate => :string, :required => false
+  config :secret_token, :validate => :string, :required => false
 
   # If Secret is defined, we drop the events that don't match. 
   # Otherwise, we'll just add a invalid tag
-  config :dropinvalid, :validate => :boolean, :default => false
+  config :drop_invalid, :validate => :boolean
 
   def register
     require "ftw"
@@ -32,9 +32,8 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
 
   public
   def run(output_queue)
-    # TODO(sissel): Implement server mode.
     @server = FTW::WebServer.new(@ip, @port) do |request, response|
-    body = request.read_body
+        body = request.read_body
         begin
           event = LogStash::Event.new(JSON.parse(body))
         rescue JSON::ParserError => e
@@ -42,21 +41,21 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
           yield LogStash::Event.new("message" => data)
         end
         event['headers'] = request.headers.to_hash
-    if defined? @secrettoken and event['headers']['x-hub-signature']
-        event['hash'] = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), @secrettoken, body)
-        if not Rack::Utils.secure_compare(event['hash'], event['headers']['x-hub-signature'])
-        if not @dropinvalid
-            event['tags'] = "_Invalid_Github_Message"
-        else
-            @logger.info("Dropping invalid Github message")
-            drop = true
+        if defined? @secrettoken and event['headers']['x-hub-signature']
+            event['hash'] = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), @secret_token, body)
+            if not Rack::Utils.secure_compare(event['hash'], event['headers']['x-hub-signature'])
+                if not @drop_invalid
+                    event['tags'] = "_Invalid_Github_Message"
+                else
+                    @logger.info("Dropping invalid Github message")
+                    drop = true
+                end
+            end
         end
-        end
-    end
-    if not drop
+        if not drop
             decorate(event)
             output_queue << event
-    end
+        end
         response.status = 200
         response.body = "Accepted!"
     end
