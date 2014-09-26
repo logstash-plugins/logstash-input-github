@@ -64,7 +64,6 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
 
   def teardown
     @server.stop
-  end
+  end # def teardown
 
-
-end # class LogStash::Inputs::Websocket
+end # class LogStash::Inputs::Github
