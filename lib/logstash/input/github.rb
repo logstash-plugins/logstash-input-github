@@ -41,7 +41,7 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
           event = LogStash::Event.new("message" => body, "tags" => "_invalidjson")
         end
         event['headers'] = request.headers.to_hash
-        if defined? @secrettoken and event['headers']['x-hub-signature']
+        if defined? @secret_token and event['headers']['x-hub-signature']
             event['hash'] = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), @secret_token, body)
             if not Rack::Utils.secure_compare(event['hash'], event['headers']['x-hub-signature'])
                 if not @drop_invalid
