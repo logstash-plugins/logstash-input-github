@@ -11,8 +11,6 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
   config_name "github"
   milestone 1
 
-  default :codec, "line"
-
   # The ip to listen on
   config :ip, :validate => :string, :default => "0.0.0.0"
 
