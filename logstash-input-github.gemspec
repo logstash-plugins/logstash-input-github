@@ -5,9 +5,9 @@ Gem::Specification.new do |s|
   s.licenses        = ['Apache License (2.0)']
   s.summary         = "Accept events from github webhooks."
   s.description     = "This gem is a logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/plugin install gemname. This gem is not a stand-alone program"
-  s.authors         = ["Elasticsearch"]
-  s.email           = 'jason.kendall@elasticsearch.com'
-  s.homepage        = "http://www.elasticsearch.org/guide/en/logstash/current/index.html"
+  s.authors         = ["Elastic"]
+  s.email           = 'jason.kendall@elastic.co'
+  s.homepage        = "http://www.elastic.co/guide/en/logstash/current/index.html"
   s.require_paths = ["lib"]
 
   # Files
