@@ -57,8 +57,8 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
     @server.run
   end # def run
 
-  def teardown
+  def close
     @server.stop
-  end # def teardown
+  end # def close
 
 end # class LogStash::Inputs::Github
