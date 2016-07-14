@@ -1,3 +1,6 @@
+## 3.0.1
+  - Relax constraint on logstash-core-plugin-api to >= 1.60 <= 2.99
+
 ## 3.0.0
  - breaking: Updated plugin to use new Java Event APIs
 
