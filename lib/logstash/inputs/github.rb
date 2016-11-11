@@ -29,7 +29,7 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
   def run(output_queue)
     @server = FTW::WebServer.new(@ip, @port) do |request, response|
         body = request.read_body
-        event = build_event_from_request(body, request.headers_.to_hash)
+        event = build_event_from_request(body, request.headers.to_hash)
         valid_event = verify_signature(event,body)
         if !valid_event && @drop_invalid
           @logger.info("Dropping invalid Github message")
