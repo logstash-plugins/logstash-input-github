@@ -3,6 +3,7 @@ require "logstash/inputs/base"
 require "logstash/namespace"
 require "socket"
 require "json"
+require "rack"
 
 # Read events from github webhooks
 class LogStash::Inputs::GitHub < LogStash::Inputs::Base
