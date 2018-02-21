@@ -55,4 +55,51 @@ describe  LogStash::Inputs::GitHub do
     end
 
   end
+
+  describe 'graceful shutdown' do
+    context 'when underlying webserver crashes' do
+
+      # Stubbing out our FTW::WebServer allows us to force it to raise an exception when we try to run it.
+      let(:mock_webserver_class) { double('FTW::WebServer::class').as_null_object }
+      let(:mock_webserver) { double('FTW::WebServer').as_null_object }
+      before(:each) do
+        stub_const('FTW::WebServer', mock_webserver_class)
+        allow(mock_webserver_class).to receive(:new).and_return(mock_webserver)
+        expect(mock_webserver).to receive(:run).and_raise('testing: intentional uncaught exception')
+      end
+
+      it 'makes an attempt to stop the webserver' do
+        expect(mock_webserver).to receive(:stop)
+
+        plugin.run([]) rescue nil
+      end
+
+      it 'propagates the original exception' do
+        expect do
+          plugin.run([])
+        end.to raise_exception('testing: intentional uncaught exception')
+      end
+
+      context 'and an attempt to stop the webserver also crashes' do
+        let(:mock_logger) { double('Logger').as_null_object }
+        before(:each) do
+          allow(plugin).to receive(:logger).and_return(mock_logger)
+          allow(mock_webserver).to receive(:stop).and_raise('yo dawg')
+        end
+
+        it 'logs helpfully' do
+          expect(mock_logger).to receive(:error).with("Error while stopping FTW::WebServer",
+                                                      exception: 'yo dawg', backtrace: instance_of(Array))
+
+          plugin.run([]) rescue nil
+        end
+
+        it 'propagates the original exception' do
+          expect do
+            plugin.run([])
+          end.to raise_exception('testing: intentional uncaught exception')
+        end
+      end
+    end
+  end
 end

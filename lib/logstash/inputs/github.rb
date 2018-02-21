@@ -42,6 +42,13 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
         response.body = "Accepted!"
     end
     @server.run
+  rescue Exception => original_exception
+    # If our server crashes, it may not have cleaned up after itself;
+    # since `FTW::WebServer#stop` is idempotent, make one last attempt
+    # before propagating the original exception.
+    @server && @server.stop rescue logger.error("Error while stopping FTW::WebServer", exception: $!.message, backtrace: $!.backtrace)
+
+    raise original_exception
   end # def run
 
   def build_event_from_request(body, headers)
@@ -69,8 +76,8 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
     return is_valid
   end
 
-  def close
-    @server.stop
-  end # def close
+  def stop
+    @server && @server.stop
+  end # def stop
 
 end # class LogStash::Inputs::Github

@@ -1,3 +1,8 @@
+## 3.0.6
+  - Improve malformed-input handling by using updated FTW
+  - Improve webserver crash recovery
+  - Properly support plugin stopping & reloading
+
 ## 3.0.5
   - Update gemspec summary
 
