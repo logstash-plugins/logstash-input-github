@@ -1,3 +1,6 @@
+## 3.0.7
+  - Docs: Set the default_codec doc attribute.
+
 ## 3.0.6
   - Improve malformed-input handling by using updated FTW
   - Improve webserver crash recovery
