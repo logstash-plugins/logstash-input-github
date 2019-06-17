@@ -72,6 +72,9 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
         event.tag("_Invalid_Github_Message")
         is_valid = false
       end
+    elsif @secret_token && !sign_header
+        event.tag("_Invalid_Github_Message")
+        is_valid = false
     end
     return is_valid
   end

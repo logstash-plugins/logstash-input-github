@@ -1,3 +1,6 @@
+## 3.0.8
+  - Require x-hub-signature header if secret_token defined
+
 ## 3.0.7
   - Docs: Set the default_codec doc attribute.
 
@@ -28,4 +31,3 @@
  - Plugins were updated to follow the new shutdown semantic, this mainly allows Logstash to instruct input plugins to terminate gracefully, 
    instead of using Thread.raise on the plugins' threads. Ref: https://github.com/elastic/logstash/pull/3895
  - Dependency on logstash-core update to 2.0
-
