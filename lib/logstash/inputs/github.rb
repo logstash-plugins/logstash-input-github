@@ -63,17 +63,18 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
   end
 
   def verify_signature(event,body)
-    is_valid = true
+    # skip validation if we have no secret token
+    return true unless @secret_token
+
     sign_header = event.get("[headers][x-hub-signature]")
-    if @secret_token && sign_header
+    if sign_header
       hash = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), @secret_token, body)
       event.set("hash", hash)
-      if not Rack::Utils.secure_compare(hash, sign_header)
-        event.tag("_Invalid_Github_Message")
-        is_valid = false
-      end
+      return true if Rack::Utils.secure_compare(hash, sign_header)
     end
-    return is_valid
+
+    event.tag("_Invalid_Github_Message")
+    return false
   end
 
   def stop
