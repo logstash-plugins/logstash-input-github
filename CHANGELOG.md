@@ -1,3 +1,6 @@
+## 3.0.9
+  - Bump ftw dependency to 0.0.49, for compatibility with Logstash 7.x
+
 ## 3.0.8
   - Require x-hub-signature header if secret_token defined
 
