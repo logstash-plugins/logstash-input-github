@@ -16,7 +16,7 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
   config :port, :validate => :number, :required => true
 
   # Your GitHub Secret Token for the webhook
-  config :secret_token, :validate => :string, :required => false
+  config :secret_token, :validate => :password, :required => false
 
   # If Secret is defined, we drop the events that don't match.
   # Otherwise, we'll just add an invalid tag
@@ -77,7 +77,7 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
 
     sign_header = event.get("[headers][x-hub-signature]")
     if sign_header
-      hash = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), @secret_token, body)
+      hash = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), @secret_token.value, body)
       event.set("hash", hash)
       return true if Rack::Utils.secure_compare(hash, sign_header)
     end

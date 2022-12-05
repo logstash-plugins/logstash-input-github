@@ -1,6 +1,9 @@
+## 3.0.11
+  - Change `secret_token` config type to `password` for better protection from leaks in debug logs [#23](https://github.com/logstash-plugins/logstash-input-github/pull/23)
+
 ## 3.0.10
   - Changed the transitive dependency `http_parser.rb` (ftw) version to `~-> 0.6.0` as newer versions are published without the java support.
-  - Fixed crashing when the request body payload is not a JSON object.  [#24](https://github.com/logstash-plugins/logstash-input-github/pull/24) 
+  - Fixed crashing when the request body payload is not a JSON object.  [#24](https://github.com/logstash-plugins/logstash-input-github/pull/24)  
 
 ## 3.0.9
   - Bump ftw dependency to 0.0.49, for compatibility with Logstash 7.x
