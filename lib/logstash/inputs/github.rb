@@ -53,7 +53,16 @@ class LogStash::Inputs::GitHub < LogStash::Inputs::Base
 
   def build_event_from_request(body, headers)
     begin
-      event = LogStash::Event.new(JSON.parse(body))
+      data = JSON.parse(body)
+      # The JSON specification defines single values as valid JSONs, it can be a string in double quotes,
+      # a number, true or false or null. When the body is parsed, those values are transformed into its
+      # corresponding types. When those types aren't a Hash (aka object),  it breaks the LogStash::Event
+      # contract and crashes.
+      if data.is_a?(::Hash)
+        event = LogStash::Event.new(data)
+      else
+        event = LogStash::Event.new("message" => body, "tags" => "_invalidjsonobject")
+      end
     rescue JSON::ParserError => e
       @logger.info("JSON parse failure. Falling back to plain-text", :error => e, :data => body)
       event = LogStash::Event.new("message" => body, "tags" => "_invalidjson")

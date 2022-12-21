@@ -1,3 +1,6 @@
+## 3.0.10
+   - Fixed crashing when the request body payload is not a JSON object. [#24](https://github.com/logstash-plugins/logstash-input-github/pull/24)
+
 ## 3.0.9
   - Bump ftw dependency to 0.0.49, for compatibility with Logstash 7.x
 

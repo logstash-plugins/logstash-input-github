@@ -86,6 +86,27 @@ describe  LogStash::Inputs::GitHub do
 
   end
 
+  describe "verify event builder" do
+    let(:plugin) { LogStash::Plugin.lookup("input", "github").new( {"port" => 9999} ) }
+    let(:body) {"{}"}
+    let(:event) {plugin.build_event_from_request(body, {})}
+
+    context 'when request body is a minimal JSON value' do
+      let(:body) {"123"}
+      it 'should add the body string into the message field and tag' do
+        expect(event.get("message")).to eq("123")
+        expect(event.get("tags")).to eq("_invalidjsonobject")
+      end
+    end
+
+    context 'when request body is a JSON object' do
+      let(:body) {'{"action": "create"}'}
+      it 'should parse the body' do
+        expect(event.get("action")).to eq("create")
+      end
+    end
+  end
+
   describe 'graceful shutdown' do
     context 'when underlying webserver crashes' do
 
