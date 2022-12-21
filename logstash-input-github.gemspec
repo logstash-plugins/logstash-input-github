@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'addressable'
   s.add_runtime_dependency 'logstash-codec-plain'
+  s.add_runtime_dependency 'http_parser.rb', '~> 0.6.0'
   s.add_runtime_dependency 'ftw', '~> 0.0.49'
 
   s.add_development_dependency 'logstash-devutils'
