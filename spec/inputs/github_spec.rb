@@ -27,7 +27,7 @@ describe  LogStash::Inputs::GitHub do
   end
 
   describe "verify webhook signature if token provided" do
-    let(:plugin) { LogStash::Plugin.lookup("input", "github").new( {"port" => 9999, "secret_token" => "my_secret"} ) }
+    let(:plugin) { LogStash::Plugin.lookup("input", "github").new( {"port" => 9999, "secret_token" => ::LogStash::Util::Password.new("my_secret")} ) }
     let(:body) {IO.read("spec/fixtures/event_create.json")}
     let(:headers) { {"x-hub-signature" => "hash"} }
     let(:event) {plugin.build_event_from_request(body,headers)}
@@ -151,6 +151,17 @@ describe  LogStash::Inputs::GitHub do
           end.to raise_exception('testing: intentional uncaught exception')
         end
       end
+    end
+  end
+
+  describe "debugging `secret_token`" do
+    let(:plugin) { LogStash::Plugin.lookup("input", "github").new( {"port" => 9999, "secret_token" => ::LogStash::Util::Password.new("my_secret")} ) }
+
+    it "should not show origin value" do
+      expect(plugin.logger).to receive(:debug).with('<password>')
+
+      plugin.register
+      plugin.logger.send(:debug, plugin.secret_token.to_s)
     end
   end
 end
